@@ -34,7 +34,7 @@
                 <stringAttribute value="$(WIND_BASE)/target/lib/WPILib.a"/>
             </listAttribute>
             <listAttribute key="BLD::Info|Libs|PPC603gnu">
-                <stringAttribute value="-l C:/WindRiver/workspace/WPILib/PPC603gnu/WPILib/Debug/WPILib.a"/>
+                <stringAttribute value="C:/WindRiver/workspace/WPILib/PPC603gnu/WPILib/Debug/WPILib.a"/>
             </listAttribute>
             <listAttribute key="BLD::Info|Macros">
                 <stringAttribute value="VX_CPU_FAMILY"/>

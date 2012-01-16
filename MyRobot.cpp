@@ -11,7 +11,7 @@
  */ 
 class Robot : public SimpleRobot
 {
-	RobotDrive myRobot; // robot drive system
+	//RobotDrive myRobot; // robot drive system
 	Joystick stick; // only joystick
 
 	CSVReader *config;
@@ -19,10 +19,10 @@ class Robot : public SimpleRobot
 	IMU *imu;
 public:
 	Robot(void):
-		myRobot(1, 2),	// these must be initialized in the same order
+		//myRobot(1, 2),	// these must be initialized in the same order
 		stick(1)		// as they are declared above.
 	{
-		myRobot.SetExpiration(0.1);
+		//myRobot.SetExpiration(0.1);
 		config = new CSVReader("CSVConfig.csv");
 		log = new Logger("MatchLog.csv",5);
 		imu = new IMU;
@@ -33,10 +33,16 @@ public:
 	 */
 	void Autonomous(void)
 	{
-		myRobot.SetSafetyEnabled(false);
-		myRobot.Drive(0.5, 0.0); 	// drive forwards half speed
-		Wait(2.0); 				//    for 2 seconds
-		myRobot.Drive(0.0, 0.0); 	// stop robot
+		GetWatchdog().SetEnabled(false);
+		//myRobot.SetSafetyEnabled(false);
+		//myRobot.Drive(0.5, 0.0); 	// drive forwards half speed
+		//Wait(2.0); 				//    for 2 seconds
+		//myRobot.Drive(0.0, 0.0); 	// stop robot
+		while(true) {
+			imu->update();
+			Wait(.1);
+		}
+		
 	}
 
 	/**
@@ -44,12 +50,14 @@ public:
 	 */
 	void OperatorControl(void)
 	{
+		/*
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl())
 		{
 			myRobot.ArcadeDrive(stick); // drive with arcade style (use right stick)
 			Wait(0.005);				// wait for a motor update time
 		}
+		*/
 	}
 };
 
