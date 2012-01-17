@@ -22,6 +22,7 @@ public:
 class Logger {
 public:
 	Logger (const std::string &filePath, float time);
+	~Logger ();
 	void log();
 	void init();
 private:

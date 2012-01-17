@@ -23,6 +23,11 @@ FileName(fileName), Time(time) {
 	head = new LogEnd();
 }
 
+Logger::~Logger () {
+	fclose(file);
+	delete head; // should I delete it or let the other systems delete the logging interface
+}
+
 void Logger::init() {
 	fprintf(file, "time");
 	head->_pName(file);
