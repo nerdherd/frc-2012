@@ -13,6 +13,7 @@ class Robot : public SimpleRobot
 {
 	//RobotDrive myRobot; // robot drive system
 	Joystick stick; // only joystick
+	Jaguar left1;
 
 	CSVReader *config;
 	Logger *log;
@@ -21,9 +22,10 @@ public:
 	Robot(void):
 		//myRobot(1, 2),	// these must be initialized in the same order
 		stick(1)		// as they are declared above.
+		,left1(1)
 	{
 		//myRobot.SetExpiration(0.1);
-		config = new CSVReader("CSVConfig.csv");
+		config = new CSVReader("Config.csv");
 		log = new Logger("MatchLog.csv",5);
 		imu = new IMU;
 	}
@@ -58,6 +60,7 @@ public:
 			Wait(0.005);				// wait for a motor update time
 		}
 		*/
+		left1.Set(.2);
 	}
 };
 
