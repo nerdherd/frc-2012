@@ -1,7 +1,10 @@
- #include "WPILib.h"
+#include "WPILib.h"
 #include "CSVReader.h"
 #include "Logger.h"
-#include "9DOF.h"
+//#include "9DOF.h"
+
+#include <iostream>
+using namespace std;
 
 /**
  * This is a demo program showing the use of the RobotBase class.
@@ -13,21 +16,31 @@ class Robot : public SimpleRobot
 {
 	//RobotDrive myRobot; // robot drive system
 	Joystick stick; // only joystick
-	Jaguar left1;
-
+	//Jaguar left1;//, left2, right1, right2;
+	CANJaguar left1, left2, right1, right2;
+	
+	AnalogChannel distance;
+	
 	CSVReader *config;
 	Logger *log;
-	IMU *imu;
+	//IMU *imu;
 public:
 	Robot(void):
 		//myRobot(1, 2),	// these must be initialized in the same order
 		stick(1)		// as they are declared above.
-		,left1(1)
+		,left1(2)
+		,left2(4)
+		,right1(5)
+		,right2(3)
+		,distance(2)
+		/*,left2(2)
+		,right1(3)
+		,right2(4)*/
 	{
 		//myRobot.SetExpiration(0.1);
 		config = new CSVReader("Config.csv");
 		log = new Logger("MatchLog.csv",5);
-		imu = new IMU;
+		//imu = new IMU;
 	}
 
 	/**
@@ -40,10 +53,17 @@ public:
 		//myRobot.Drive(0.5, 0.0); 	// drive forwards half speed
 		//Wait(2.0); 				//    for 2 seconds
 		//myRobot.Drive(0.0, 0.0); 	// stop robot
+		//Jaguar left1(1);
 		while(true) {
-			imu->update();
-			Wait(.1);
+			/*left1.Set(.2);
+			left2.Set(.2);
+			right1.Set(.2);
+			right2.Set(.2);*/
+			cout << distance.GetVoltage() << endl;
+			Wait(.01);
+			//cout << left1.IsAlive() << " " << left1.IsSafetyEnabled() << endl;
 		}
+		GetWatchdog().SetEnabled(true);
 		
 	}
 
@@ -52,6 +72,7 @@ public:
 	 */
 	void OperatorControl(void)
 	{
+		
 		/*
 		myRobot.SetSafetyEnabled(true);
 		while (IsOperatorControl())
@@ -60,9 +81,20 @@ public:
 			Wait(0.005);				// wait for a motor update time
 		}
 		*/
-		left1.Set(.2);
+		while(IsOperatorControl()) {
+			GetWatchdog().Feed();
+			//left1.SetSpeed(1);
+			/*left2.SetSpeed(1);
+			right1.SetSpeed(1);
+			right2.SetSpeed(1);*/
+			//cout << left1.IsAlive() << " " << left1.IsSafetyEnabled() << endl;
+			right1.Set(stick.GetRawAxis(2));
+			right1.Set(stick.GetRawAxis(2));
+			left1.Set(-1*stick.GetRawAxis(4));
+			left2.Set(-1*stick.GetRawAxis(4));
+			Wait(.01);
+		}
 	}
 };
 
 START_ROBOT_CLASS(Robot);
-
