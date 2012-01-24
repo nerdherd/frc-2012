@@ -2,6 +2,7 @@
 #include "CSVReader.h"
 #include "Logger.h"
 //#include "9DOF.h"
+#include "Vision/AxisCamera.h"
 
 #include <iostream>
 using namespace std;
@@ -54,13 +55,15 @@ public:
 		//Wait(2.0); 				//    for 2 seconds
 		//myRobot.Drive(0.0, 0.0); 	// stop robot
 		//Jaguar left1(1);
+		AxisCamera &camera = AxisCamera::GetInstance("10.06.87.11");
+		
 		while(true) {
 			/*left1.Set(.2);
 			left2.Set(.2);
 			right1.Set(.2);
 			right2.Set(.2);*/
-			cout << distance.GetVoltage() << endl;
-			Wait(.01);
+			cout << distance.GetVoltage()/.0098 << endl;
+			Wait(.1);
 			//cout << left1.IsAlive() << " " << left1.IsSafetyEnabled() << endl;
 		}
 		GetWatchdog().SetEnabled(true);
@@ -89,10 +92,10 @@ public:
 			right2.SetSpeed(1);*/
 			//cout << left1.IsAlive() << " " << left1.IsSafetyEnabled() << endl;
 			right1.Set(stick.GetRawAxis(2));
-			right1.Set(stick.GetRawAxis(2));
+			right2.Set(stick.GetRawAxis(2));
 			left1.Set(-1*stick.GetRawAxis(4));
 			left2.Set(-1*stick.GetRawAxis(4));
-			Wait(.01);
+			Wait(.02);
 		}
 	}
 };
