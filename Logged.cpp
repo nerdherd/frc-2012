@@ -14,21 +14,29 @@ std::string JaguarLog::name() {
 	s += " voltage,";
 	s += "Jag ";
 	s += num;
-	s += " current,";
+	s += " current";
 	if(m_controlMode == CANJaguar::kSpeed) {
-		s += "Jag ";
+		s += ",Jag ";
 		s += num;
 		s += " speed";
-	}else{
-		s += "null,";
+	}else if(m_controlMode == CANJaguar::kPosition) {
+		s += ",Jag ";
+		s += num;
+		s += " position";
 	}
+	// nothing else
 	return s;
 }
 
 void JaguarLog::log(FILE *f) {
-	double state=0;
-	//if(m_controlMode == CANJaguar::kSpeed) {
-		state = Get();
-	//}
-	fprintf(f, "%f,%f,%f", GetOutputVoltage(), GetOutputCurrent(), state);
+	double state=-1;
+	if(m_controlMode == CANJaguar::kSpeed) {
+		state = GetSpeed();
+	}else if(m_controlMode == CANJaguar::kPosition) {
+		state = GetPosition();
+	}
+	if(state == -1)
+		fprintf(f, ",%f,%f", GetOutputVoltage(), GetOutputCurrent());
+	else
+		fprintf(f, ",%f,%f,%f", GetOutputVoltage(), GetOutputCurrent(), state);
 }

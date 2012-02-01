@@ -21,6 +21,7 @@ class Robot : public SimpleRobot
 	//Jaguar left1;//, left2, right1, right2;
 	//CANJaguar left1, left2, right1, right2;
 	JaguarLog *shooter;
+	JaguarLog *left1, *left2, *right1, *right2;
 	
 	AnalogChannel distance;
 	
@@ -42,14 +43,25 @@ public:
 		,right2(4)*/
 	{
 		//myRobot.SetExpiration(0.1);
+		Wait(.5);
 		config = new CSVReader("Config.csv");
-		log = new Logger("MatchLog.csv",0.01);
-		shooter = new JaguarLog(log, 8, CANJaguar::kSpeed);
+		log = new Logger("MatchLog.csv",0.1);
+		shooter = new JaguarLog(log, 7, CANJaguar::kSpeed);
+		left1 = new JaguarLog(log, 2);
+		left2 = new JaguarLog(log, 4);
+		right1 = new JaguarLog(log, 5);
+		right2 = new JaguarLog(log, 3);
+		
 		//imu = new IMU;
 		
 		log->init();
 	}
 
+	~Robot () {
+		//delete shooter;
+		delete config;
+	}
+	
 	/**
 	 * Drive left & right motors for 2 seconds then stop
 	 */
@@ -120,11 +132,11 @@ public:
 			right1.SetSpeed(1);
 			right2.SetSpeed(1);*/
 			//cout << left1.IsAlive() << " " << left1.IsSafetyEnabled() << endl;
-			/*right1.Set(stick.GetRawAxis(2));
-			right2.Set(stick.GetRawAxis(2));
-			left1.Set(-1*stick.GetRawAxis(4));
-			left2.Set(-1*stick.GetRawAxis(4));
-			*/Wait(.02);
+			right1->Set(stick.GetRawAxis(2));
+			right2->Set(stick.GetRawAxis(2));
+			left1->Set(-1*stick.GetRawAxis(4));
+			left2->Set(-1*stick.GetRawAxis(4));
+			Wait(.02);
 		}
 	}
 };

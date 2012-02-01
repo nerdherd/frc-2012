@@ -39,6 +39,7 @@ private:
 	friend class LogBase;
 	int TaskLogger();
 	static int s_TaskLogger(Logger*);
+	bool inited;
 };
 
 #endif // NerdHerd_Logger_
