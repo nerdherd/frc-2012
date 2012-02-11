@@ -2,8 +2,9 @@
 #include "CSVReader.h"
 #include "Logger.h"
 //#include "9DOF.h"
-#include "Vision/AxisCamera.h"
+//#include "Vision/AxisCamera.h"
 #include "Logged.h"
+#include "tracking.h"
 
 #include <iostream>
 using namespace std;
@@ -27,6 +28,7 @@ class Robot : public SimpleRobot
 	
 	CSVReader *config;
 	Logger *log;
+	CameraTracking *camera;
 	//IMU *imu;
 public:
 	Robot(void):
@@ -51,6 +53,7 @@ public:
 		left2 = new JaguarLog(log, 4);
 		right1 = new JaguarLog(log, 5);
 		right2 = new JaguarLog(log, 3);
+		camera = new CameraTracking(log, config);
 		
 		//imu = new IMU;
 		
@@ -59,6 +62,7 @@ public:
 
 	~Robot () {
 		//delete shooter;
+		delete log; // everything connected with the logger should be deleted when this deleted
 		delete config;
 	}
 	
@@ -67,7 +71,7 @@ public:
 	 */
 	void Autonomous(void)
 	{
-		/*
+		
 		GetWatchdog().SetEnabled(false);
 		cout << "Autonomous running\n";
 		//myRobot.SetSafetyEnabled(false);
@@ -75,21 +79,21 @@ public:
 		//Wait(2.0); 				//    for 2 seconds
 		//myRobot.Drive(0.0, 0.0); 	// stop robot
 		//Jaguar left1(1);
-		AxisCamera &camera = AxisCamera::GetInstance();//("10.06.87.11");
+		/*AxisCamera &camera = AxisCamera::GetInstance("10.06.87.11");
 		HSLImage *image = new HSLImage();
-		cout << camera.GetImage(image) << endl;
+		cout << camera.GetImage(image) << endl;*/
 		while(IsAutonomous()) {
 			/*left1.Set(.2);
 			left2.Set(.2);
 			right1.Set(.2);
-			right2.Set(.2);
-			cout << distance.GetVoltage()/.0098 << "\t"
-				<< camera.GetImage(image) << endl;
+			right2.Set(.2);*/
+			cout << distance.GetVoltage()/.0098 << "\n";
+			//	<< camera.GetImage(image) << endl;
 			Wait(.1);
 			//cout << left1.IsAlive() << " " << left1.IsSafetyEnabled() << endl;
 		}
 		GetWatchdog().SetEnabled(true);
-		*/
+		/*
 		GetWatchdog().SetEnabled(false);
 		config->ReloadValues();
 		cout << config->GetValue("shooter") << endl;
@@ -107,7 +111,7 @@ public:
 		}
 		shooter->Set(0);
 		GetWatchdog().SetEnabled(true);
-		
+		*/
 	}
 
 	/**

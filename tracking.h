@@ -1,0 +1,28 @@
+#ifndef NerdHerd_tracking_
+#define NerdHerd_tracking_
+
+#include "WPILib.h"
+#include <vector>
+#include "Logger.h"
+#include "CSVReader.h"
+
+class CameraTracking : public LogBase {
+public:
+	struct TargetLocation{
+		
+	};
+	CameraTracking(Logger*, CSVReader*);
+	~CameraTracking();
+	std::string name();
+	void log(FILE*);
+	
+private:
+	std::vector<TargetLocation> locations;
+	static void s_TrackTask (CameraTracking *self);
+	void TrackTask();
+	Task TaskTrack;
+	CSVReader *config;
+	int _framecount;
+};
+
+#endif // NerdHerd_tracking_
