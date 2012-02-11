@@ -2,6 +2,7 @@
 
 #include <iostream>
 using namespace std;
+#include <math.h>
 
 CameraTracking::CameraTracking (Logger *log, CSVReader *con):
 LogBase(log), config(con),
@@ -20,6 +21,15 @@ void CameraTracking::s_TrackTask (CameraTracking *self) {
 	self->TrackTask();
 }
 
+float CameraTracking::heightToDistance (int height) {
+	return 27420. * pow(height, -1.133);
+}
+
+bool CameraTracking::CompareParticles(ParticleAnalysisReport par1, ParticleAnalysisReport par2) {
+	//return particle1.particleToImagePercent > particle2.particleToImagePercent;
+	return (par1.particleArea / (par1.boundingRect.height * par1.boundingRect.width)) > (par2.particleArea / (par2.boundingRect.height * par2.boundingRect.width));
+}
+
 
 void CameraTracking::TrackTask () {
 	cout << "camera tracking task starting\n";
@@ -29,7 +39,7 @@ void CameraTracking::TrackTask () {
 	int error_count=0;
 	while(1) {
 		Wait(.1); // max 20 Hz
-		if(error_count > 75) {
+		if(error_count > 50) {
 			// resting camera
 			/*AxisCamera::DeleteInstance();
 			Wait(1);
@@ -38,6 +48,7 @@ void CameraTracking::TrackTask () {
 			*/
 			camera.RestartCameraTask();
 			Wait(2);
+			
 			error_count=0;
 		}
 		if(0 == camera.GetImage(&image)) {
@@ -48,7 +59,7 @@ void CameraTracking::TrackTask () {
 		}
 		if(!camera.IsFreshImage()) {
 			// idk what is happening here
-			printf("did not get a fresh image\n");
+			//printf("did not get a fresh image\n");
 			Wait(.1);
 			error_count++;
 			continue;
@@ -81,14 +92,32 @@ void CameraTracking::TrackTask () {
 		
 		convex->Write("convex_img.png");
 		
-		vector<ParticleAnalysisReport>* CAMresults = convex->GetOrderedParticleAnalysisReports();
-		vector<ParticleAnalysisReport> targets;
+		//vector<ParticleAnalysisReport>* CAMresults = convex->GetOrderedParticleAnalysisReports();
+		//vector<ParticleAnalysisReport> targets;
 		double thresholdValue = config->GetValue("imageTargetThreshold");
-		
+		/*
 		for(vector<ParticleAnalysisReport>::iterator it=CAMresults->begin(), end=CAMresults->end();it!=end;it++) {
 			
-			printf("particle %f %f %f %f\n", it->particleToImagePercent, it->imageHeight * it->imageWidth, it->particleArea, it->particleQuality);
+			printf("particle %f %f %f %f %f\n", it->particleToImagePercent, it->particleArea / (it->boundingRect.height * it->boundingRect.width), it->boundingRect.height * it->boundingRect.width, it->particleArea, it->particleQuality);
+			targets.push_back(*it);
 			break;
+		}*/
+		
+		vector<ParticleAnalysisReport> particles;
+		int particleCount = convex->GetNumberParticles();
+		for(int particleIndex = 0; particleIndex < particleCount; particleIndex++)
+		{
+			ParticleAnalysisReport par = convex->GetParticleAnalysisReport(particleIndex);
+			//printf("area %f\n", par.particleArea / (par.boundingRect.height * par.boundingRect.width));
+			if((par.particleArea / (par.boundingRect.height * par.boundingRect.width)) > thresholdValue && par.boundingRect.width > 8 && par.boundingRect.height > 8)
+				particles.push_back(par);
+		}
+		//sort(particles.begin(), particles.end(), CompareParticles);
+		sort(particles.begin(), particles.end(), CompareParticles);
+		
+		
+		for(vector<ParticleAnalysisReport>::iterator it = particles.begin();it!=particles.end();it++) {
+			printf("distance %i %f %f %f\n", it->boundingRect.height, heightToDistance(it->boundingRect.height), it->center_mass_x_normalized, it->center_mass_y_normalized);
 		}
 		
 		_framecount++;
@@ -98,7 +127,7 @@ void CameraTracking::TrackTask () {
 		// clean up
 		delete Threshold;
 		delete convex;
-		delete CAMresults;
+		//delete CAMresults;
 	}
 }
 

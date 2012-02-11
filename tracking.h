@@ -23,6 +23,8 @@ private:
 	Task TaskTrack;
 	CSVReader *config;
 	int _framecount;
+	float heightToDistance(int height);
+	static bool CompareParticles(ParticleAnalysisReport particle1, ParticleAnalysisReport particle2);
 };
 
 #endif // NerdHerd_tracking_
