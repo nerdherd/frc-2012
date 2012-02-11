@@ -22,7 +22,7 @@ void CameraTracking::s_TrackTask (CameraTracking *self) {
 }
 
 float CameraTracking::heightToDistance (int height) {
-	return 27420. * pow(height, -1.133);
+	return 20105. * pow(height, -1.0592);
 }
 
 bool CameraTracking::CompareParticles(ParticleAnalysisReport par1, ParticleAnalysisReport par2) {
@@ -109,7 +109,9 @@ void CameraTracking::TrackTask () {
 		{
 			ParticleAnalysisReport par = convex->GetParticleAnalysisReport(particleIndex);
 			//printf("area %f\n", par.particleArea / (par.boundingRect.height * par.boundingRect.width));
-			if((par.particleArea / (par.boundingRect.height * par.boundingRect.width)) > thresholdValue && par.boundingRect.width > 8 && par.boundingRect.height > 8)
+			if((par.particleArea / (par.boundingRect.height * par.boundingRect.width)) > thresholdValue 
+					&& par.boundingRect.width > 25 // anything smaller than this will never be the target
+					&& par.boundingRect.height > 25)
 				particles.push_back(par);
 		}
 		//sort(particles.begin(), particles.end(), CompareParticles);
