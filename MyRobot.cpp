@@ -1,7 +1,7 @@
 #include "WPILib.h"
 #include "CSVReader.h"
 #include "Logger.h"
-//#include "9DOF.h"
+#include "9DOF.h"
 //#include "Vision/AxisCamera.h"
 #include "Logged.h"
 #include "tracking.h"
@@ -29,7 +29,7 @@ class Robot : public SimpleRobot
 	CSVReader *config;
 	Logger *log;
 	CameraTracking *camera;
-	//IMU *imu;
+	IMU *imu;
 public:
 	Robot(void):
 		//myRobot(1, 2),	// these must be initialized in the same order
@@ -53,9 +53,9 @@ public:
 		left2 = new JaguarLog(log, 4);
 		right1 = new JaguarLog(log, 5);
 		right2 = new JaguarLog(log, 3);
-		camera = new CameraTracking(log, config);
+		//camera = new CameraTracking(log, config);
 		
-		//imu = new IMU;
+		imu = new IMU(log);
 		
 		log->init();
 	}
@@ -87,8 +87,9 @@ public:
 			left2.Set(.2);
 			right1.Set(.2);
 			right2.Set(.2);*/
-			cout << distance.GetVoltage()/.0098 << "\n";
+			//cout << distance.GetVoltage()/.0098 << "\n";
 			//	<< camera.GetImage(image) << endl;
+			imu->update();
 			Wait(.1);
 			//cout << left1.IsAlive() << " " << left1.IsSafetyEnabled() << endl;
 		}

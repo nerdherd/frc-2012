@@ -118,14 +118,22 @@ void CameraTracking::TrackTask () {
 		sort(particles.begin(), particles.end(), CompareParticles);
 		
 		
-		for(vector<ParticleAnalysisReport>::iterator it = particles.begin();it!=particles.end();it++) {
+		/*for(vector<ParticleAnalysisReport>::iterator it = particles.begin();it!=particles.end();it++) {
 			printf("distance %i %f %f %f\n", it->boundingRect.height, heightToDistance(it->boundingRect.height), it->center_mass_x_normalized, it->center_mass_y_normalized);
+		}*/
+		
+		if(particles.size() > 0) {
+			distance = heightToDistance(particles[0].boundingRect.height);
+			horizantial = particles[0].center_mass_x_normalized;
+			fresh = true;
+		}else{
+			fresh = false;
 		}
 		
 		_framecount++;
-		printf("camera is good\n");
+		//printf("camera is good\n");
 		error_count=0;
-		Wait(.1);
+		Wait(.1); // change this to be a lot smaller, it not 0
 		// clean up
 		delete Threshold;
 		delete convex;

@@ -15,6 +15,10 @@ public:
 	~CameraTracking();
 	std::string name();
 	void log(FILE*);
+	bool fresh;
+	float distance;
+	float horizantial;
+	
 	
 private:
 	std::vector<TargetLocation> locations;
