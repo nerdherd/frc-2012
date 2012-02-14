@@ -21,8 +21,10 @@ class Robot : public SimpleRobot
 	Joystick stick; // only joystick
 	//Jaguar left1;//, left2, right1, right2;
 	//CANJaguar left1, left2, right1, right2;
-	JaguarLog *shooter;
+	JaguarLog *shooter1, *shooter2;
 	JaguarLog *left1, *left2, *right1, *right2;
+	Encoder shooterEncoder;
+	Relay rr;
 	
 	AnalogChannel distance;
 	
@@ -43,19 +45,22 @@ public:
 		/*,left2(2)
 		,right1(3)
 		,right2(4)*/
+		,shooterEncoder(1,2)
+		,rr(2)
 	{
 		//myRobot.SetExpiration(0.1);
 		Wait(.5);
 		config = new CSVReader("Config.csv");
 		log = new Logger("MatchLog.csv",0.1);
-		shooter = new JaguarLog(log, 7, CANJaguar::kSpeed);
-		left1 = new JaguarLog(log, 2);
+		//shooter = new JaguarLog(log, 7, CANJaguar::kSpeed);
+		/*left1 = new JaguarLog(log, 2);
 		left2 = new JaguarLog(log, 4);
 		right1 = new JaguarLog(log, 5);
 		right2 = new JaguarLog(log, 3);
+		*/
 		//camera = new CameraTracking(log, config);
 		
-		imu = new IMU(log);
+		//imu = new IMU(log);
 		
 		log->init();
 	}
@@ -82,17 +87,24 @@ public:
 		/*AxisCamera &camera = AxisCamera::GetInstance("10.06.87.11");
 		HSLImage *image = new HSLImage();
 		cout << camera.GetImage(image) << endl;*/
-		while(IsAutonomous()) {
+		/*while(IsAutonomous()) {
 			/*left1.Set(.2);
 			left2.Set(.2);
 			right1.Set(.2);
-			right2.Set(.2);*/
+			right2.Set(.2);
 			//cout << distance.GetVoltage()/.0098 << "\n";
 			//	<< camera.GetImage(image) << endl;
-			imu->update();
+			printf("auto running\n");
 			Wait(.1);
+			//imu->update();
 			//cout << left1.IsAlive() << " " << left1.IsSafetyEnabled() << endl;
+		}*/
+		while(IsAutonomous()) {
+			rr.Set(Relay::kOn);
+			Wait(.1);
+			printf("encoder %i\n", shooterEncoder.Get());
 		}
+		
 		GetWatchdog().SetEnabled(true);
 		/*
 		GetWatchdog().SetEnabled(false);

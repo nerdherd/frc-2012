@@ -24,6 +24,7 @@ void IMU::TaskFunction () {
 
 void IMU::update () {
 	printf("running\n");
+	//fflush(stdout);
 	if(test->AddressOnly()) {
 		printf("working\n");
 	}else{

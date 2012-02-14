@@ -52,7 +52,7 @@ void CameraTracking::TrackTask () {
 			error_count=0;
 		}
 		if(0 == camera.GetImage(&image)) {
-			printf("did not get an image\n");
+			//printf("did not get an image\n");
 			Wait(.1);
 			error_count+=2;
 			continue;
@@ -118,14 +118,15 @@ void CameraTracking::TrackTask () {
 		sort(particles.begin(), particles.end(), CompareParticles);
 		
 		
-		/*for(vector<ParticleAnalysisReport>::iterator it = particles.begin();it!=particles.end();it++) {
+		for(vector<ParticleAnalysisReport>::iterator it = particles.begin();it!=particles.end();it++) {
 			printf("distance %i %f %f %f\n", it->boundingRect.height, heightToDistance(it->boundingRect.height), it->center_mass_x_normalized, it->center_mass_y_normalized);
-		}*/
+		}
 		
 		if(particles.size() > 0) {
 			distance = heightToDistance(particles[0].boundingRect.height);
 			horizantial = particles[0].center_mass_x_normalized;
 			fresh = true;
+			targets = particles;
 		}else{
 			fresh = false;
 		}

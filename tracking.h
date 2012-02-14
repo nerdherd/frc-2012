@@ -18,6 +18,7 @@ public:
 	bool fresh;
 	float distance;
 	float horizantial;
+	vector<ParticleAnalysisReport> targets;
 	
 	
 private:
