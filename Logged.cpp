@@ -11,6 +11,8 @@ std::string JaguarLog::name() {
 	sprintf(num, "%d", m_deviceNumber);
 	string s = "Jag ";
 	s += num;
+	s += " value,Jag ";
+	s += num;
 	s += " voltage,";
 	s += "Jag ";
 	s += num;
@@ -36,7 +38,7 @@ void JaguarLog::log(FILE *f) {
 		state = GetPosition();
 	}
 	if(state == -1)
-		fprintf(f, ",%f,%f", GetOutputVoltage(), GetOutputCurrent());
+		fprintf(f, ",%f,%f,%f", Get(), GetOutputVoltage(), GetOutputCurrent());
 	else
-		fprintf(f, ",%f,%f,%f", GetOutputVoltage(), GetOutputCurrent(), state);
+		fprintf(f, ",%f,%f,%f,%f", Get(), GetOutputVoltage(), GetOutputCurrent(), state);
 }

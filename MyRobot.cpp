@@ -5,6 +5,7 @@
 //#include "Vision/AxisCamera.h"
 #include "Logged.h"
 #include "tracking.h"
+#include "shooter.h"
 
 #include <iostream>
 using namespace std;
@@ -21,10 +22,11 @@ class Robot : public SimpleRobot
 	Joystick stick; // only joystick
 	//Jaguar left1;//, left2, right1, right2;
 	//CANJaguar left1, left2, right1, right2;
-	JaguarLog *shooter1, *shooter2;
+	//JaguarLog *shooter1, *shooter2;
 	JaguarLog *left1, *left2, *right1, *right2;
-	Encoder shooterEncoder;
-	Relay rr;
+	Shooter *shooter;
+	//Encoder shooterEncoder;
+	//Relay rr;
 	
 	AnalogChannel distance;
 	
@@ -45,8 +47,7 @@ public:
 		/*,left2(2)
 		,right1(3)
 		,right2(4)*/
-		,shooterEncoder(1,2)
-		,rr(2)
+	//	,shooterEncoder(1,2)
 	{
 		//myRobot.SetExpiration(0.1);
 		Wait(.5);
@@ -60,10 +61,17 @@ public:
 		*/
 		//camera = new CameraTracking(log, config);
 		
+		//shooter1 = new JaguarLog(log, 5);
+		//shooter2 = new JaguarLog(log, 7);
+		
+		//shooterEncoder.Start();
+		shooter = new Shooter(config, log);
+		
 		//imu = new IMU(log);
 		
 		log->init();
 	}
+	
 
 	~Robot () {
 		//delete shooter;
@@ -71,12 +79,22 @@ public:
 		delete config;
 	}
 	
+	void Init () {
+		config->ReloadValues();
+		shooter->reload();
+	}
+	
+	void Disabled (void) {
+		//shooter1->Set(0);
+		//shooter2->Set(0);
+	}
+	
 	/**
 	 * Drive left & right motors for 2 seconds then stop
 	 */
 	void Autonomous(void)
 	{
-		
+		Init();
 		GetWatchdog().SetEnabled(false);
 		cout << "Autonomous running\n";
 		//myRobot.SetSafetyEnabled(false);
@@ -99,10 +117,13 @@ public:
 			//imu->update();
 			//cout << left1.IsAlive() << " " << left1.IsSafetyEnabled() << endl;
 		}*/
-		while(IsAutonomous()) {
-			rr.Set(Relay::kOn);
+		//shooterEncoder.Start();
+		while(IsAutonomous() && IsEnabled()) {
+			//shooter1->Set(-.4);
+			//shooter2->Set(-.4);
 			Wait(.1);
-			printf("encoder %i\n", shooterEncoder.Get());
+			//printf("encoder %f\n", shooterEncoder.GetRate());
+			shooter->run();
 		}
 		
 		GetWatchdog().SetEnabled(true);
@@ -132,6 +153,7 @@ public:
 	 */
 	void OperatorControl(void)
 	{
+		Init();
 		GetWatchdog().SetEnabled(true);
 		/*
 		myRobot.SetSafetyEnabled(true);
@@ -149,10 +171,12 @@ public:
 			right1.SetSpeed(1);
 			right2.SetSpeed(1);*/
 			//cout << left1.IsAlive() << " " << left1.IsSafetyEnabled() << endl;
+			/*
 			right1->Set(stick.GetRawAxis(2));
 			right2->Set(stick.GetRawAxis(2));
 			left1->Set(-1*stick.GetRawAxis(4));
 			left2->Set(-1*stick.GetRawAxis(4));
+			*/
 			Wait(.02);
 		}
 	}
