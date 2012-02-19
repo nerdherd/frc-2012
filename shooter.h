@@ -9,12 +9,28 @@
 
 class Shooter: public LogBase, public PIDOutput {
 private:
-	JaguarLog *motor1, *motor2;
+	JaguarLog *motor1, *motor2, *turret;
 	CSVReader *config;
-	Encoder encoder;
 	PIDController *pid;
+	CameraTracking *camera;
+	
+	Encoder encoder;
+	AnalogChannel distance;
+	Task TaskShoot;
+	DigitalInput LimitTurret;
+	// The location will be mod 1, 1 will be a complete rotation
+	float TurretLocation;
+	bool TurretSweepDir;
+	bool inited;
+	
+	float previousDistance;
+	float computeDistance ();
+	
+	float computeSpeed(float);
+	void computeTurn();
+	static void s_TaskShoot(Shooter*);
 public:
-	Shooter (CSVReader*, Logger*);
+	Shooter (CSVReader*, Logger*, CameraTracking*);
 	void reload();
 	void run();
 	

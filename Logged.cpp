@@ -11,7 +11,7 @@ std::string JaguarLog::name() {
 	sprintf(num, "%d", m_deviceNumber);
 	string s = "Jag ";
 	s += num;
-	s += " value,Jag ";
+	s += " set,Jag ";
 	s += num;
 	s += " voltage,";
 	s += "Jag ";

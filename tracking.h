@@ -17,7 +17,7 @@ public:
 	void log(FILE*);
 	bool fresh;
 	float distance;
-	float horizantial;
+	float horizantal;
 	vector<ParticleAnalysisReport> targets;
 	
 	

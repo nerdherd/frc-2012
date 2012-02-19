@@ -21,6 +21,7 @@ private:
 	
 public:
 	IMU (Logger *log);
+	~IMU();
 	std::string name();
 	void log(FILE *f);
 	void update();

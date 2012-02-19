@@ -28,7 +28,7 @@ class Robot : public SimpleRobot
 	//Encoder shooterEncoder;
 	//Relay rr;
 	
-	AnalogChannel distance;
+	
 	
 	CSVReader *config;
 	Logger *log;
@@ -42,7 +42,7 @@ public:
 		,left2(4)
 		,right1(5)
 		,right2(3)*/
-		,distance(2)
+		//,distance(2)
 		//,shooter(8)
 		/*,left2(2)
 		,right1(3)
@@ -65,9 +65,9 @@ public:
 		//shooter2 = new JaguarLog(log, 7);
 		
 		//shooterEncoder.Start();
-		shooter = new Shooter(config, log);
+		//shooter = new Shooter(config, log);
 		
-		//imu = new IMU(log);
+		imu = new IMU(log);
 		
 		log->init();
 	}
@@ -81,7 +81,7 @@ public:
 	
 	void Init () {
 		config->ReloadValues();
-		shooter->reload();
+		//shooter->reload();
 	}
 	
 	void Disabled (void) {
@@ -97,6 +97,7 @@ public:
 		Init();
 		GetWatchdog().SetEnabled(false);
 		cout << "Autonomous running\n";
+		imu->update();
 		//myRobot.SetSafetyEnabled(false);
 		//myRobot.Drive(0.5, 0.0); 	// drive forwards half speed
 		//Wait(2.0); 				//    for 2 seconds
@@ -123,7 +124,7 @@ public:
 			//shooter2->Set(-.4);
 			Wait(.1);
 			//printf("encoder %f\n", shooterEncoder.GetRate());
-			shooter->run();
+			//shooter->run();
 		}
 		
 		GetWatchdog().SetEnabled(true);

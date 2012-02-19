@@ -124,7 +124,7 @@ void CameraTracking::TrackTask () {
 		
 		if(particles.size() > 0) {
 			distance = heightToDistance(particles[0].boundingRect.height);
-			horizantial = particles[0].center_mass_x_normalized;
+			horizantal = particles[0].center_mass_x_normalized;
 			fresh = true;
 			targets = particles;
 		}else{
@@ -134,7 +134,7 @@ void CameraTracking::TrackTask () {
 		_framecount++;
 		//printf("camera is good\n");
 		error_count=0;
-		Wait(.1); // change this to be a lot smaller, it not 0
+		Wait(.1); // change this to be a lot smaller, but not 0
 		// clean up
 		delete Threshold;
 		delete convex;
@@ -143,10 +143,10 @@ void CameraTracking::TrackTask () {
 }
 
 std::string CameraTracking::name() {
-	return "camera frames";
+	return "camera frames,camera target distance,camera target horizontal,camera targets found";
 }
 
 void CameraTracking::log(FILE *f) {
-	fprintf(f,",%i",_framecount);
+	fprintf(f,",%i,%f,%f,%i",_framecount,distance,horizantal,targets.size());
 }
 
