@@ -48,7 +48,7 @@ float Shooter::computeSpeed (float d) {
 	// return the speed in RPM
 	
 	// this is just as hackish this gets for now, but if it works then lol
-	return d/10;
+	return d*10;
 	//return config->GetValue("shooter");
 }
 
