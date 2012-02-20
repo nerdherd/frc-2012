@@ -11,17 +11,19 @@ using namespace std;
 class drive : public LogBase {
 private:
 	float scale;
-	int max;
-	int min; 
+	float highSpeed;
+	float lowSpeed; 
 	CSVReader *config;
 	JaguarLog *left1, *left2, *right1, *right2;
+	void fix(float&, float&);
+	//void lowpass(float&, float&);
 public:
 	drive (CSVReader*, Logger*);
 	virtual ~drive(); 
-	void fix(float&, float&);
-	void lowpass(float&, float&);
-	void fullfast(float&, float&);
-	void fullslow(float&, float*);
+	
+	
+	//void fullfast(float&, float&);
+	//void fullslow(float&, float*);
 	void reload(); 
 	std::string name();
 	void log(FILE*);
