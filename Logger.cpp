@@ -24,12 +24,30 @@ public:
 
 Logger::Logger (const string& fileName, float delay):
 FileName(fileName), Delay(delay), TaskLog("Logger", (FUNCPTR)s_TaskLogger, 105, 50000), inited(false){
-	file = fopen(FileName.c_str(), "w");
+	// find a file name that is not used
+	int number=0;
+	char name[50];
+	for(;;) {
+		sprintf(name, "%s-%i.csv", FileName.c_str(), number++);
+		if(access(name,F_OK) == -1) break;
+		if(number==20) {
+			// delete all the logs if there are too many
+			// this will ensure that ppl will not have problems in the future when they are demoing it or something
+			for(int i=0;i<100;++i) {
+				sprintf(name, "%s-%i.csv", FileName.c_str(), i);
+				remove(name);
+			}
+			number=0;
+		}
+	}
+	
+	file = fopen(name, "w");
 	//file = stdout;
 	head = new LogEnd();
 	startTime.Start();
 	//TaskLog.Start((int)this);
 }
+
 
 int Logger::s_TaskLogger(Logger *thisPtr)
 {

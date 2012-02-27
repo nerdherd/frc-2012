@@ -8,7 +8,7 @@
 #include <iostream>
 using namespace std;
 
-class drive : public LogBase {
+class Drive : public LogBase {
 private:
 	class lowPass {
 	private:
@@ -46,9 +46,10 @@ private:
 	void fix(float &left, float &right);
 	//void lowpass(float&, float&);
 public:
-	drive (CSVReader*, Logger*);
-	virtual ~drive(); 
+	Drive (Logger*, CSVReader*);
+	virtual ~Drive(); 
 	
+	void run(float left, float right);
 	
 	//void fullfast(float&, float&);
 	//void fullslow(float&, float*);

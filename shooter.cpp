@@ -2,7 +2,7 @@
 #include <math.h>
 
 
-Shooter::Shooter (CSVReader *c, Logger *l, CameraTracking *cam) :
+Shooter::Shooter (Logger *l, CSVReader *c, CameraTracking *cam) :
 	LogBase(l),
 	config(c) ,
 	camera(cam),

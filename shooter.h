@@ -30,7 +30,7 @@ private:
 	void computeTurn();
 	static void s_TaskShoot(Shooter*);
 public:
-	Shooter (CSVReader*, Logger*, CameraTracking*);
+	Shooter (Logger*, CSVReader*, CameraTracking*);
 	void reload();
 	void run();
 	
