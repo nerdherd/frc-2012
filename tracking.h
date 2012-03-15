@@ -8,9 +8,6 @@
 
 class CameraTracking : public LogBase {
 public:
-	struct TargetLocation{
-		
-	};
 	CameraTracking(Logger*, CSVReader*);
 	~CameraTracking();
 	std::string name();
@@ -22,11 +19,10 @@ public:
 	
 	
 private:
-	std::vector<TargetLocation> locations;
 	static void s_TrackTask (CameraTracking *self);
 	void TrackTask();
-	Task TaskTrack;
 	CSVReader *config;
+	Task TaskTrack;
 	int _framecount;
 	float heightToDistance(int height);
 	static bool CompareParticles(ParticleAnalysisReport particle1, ParticleAnalysisReport particle2);

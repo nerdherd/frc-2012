@@ -6,7 +6,8 @@ Drive::Drive(Logger *l, CSVReader *c):
 	leftPass(&alpha),
 	rightPass(&alpha),
 	leftEncoder(3,4),
-	rightEncoder(5,6)
+	rightEncoder(5,6),
+	driveShift(1)
 {
 	scale = config->GetValue("turnScale");
 	highSpeed = config->GetValue("driveHigh");
@@ -66,8 +67,8 @@ float Drive::lowPass::operator () (float value)  {
 
 void Drive::reload(){
 	scale = config->GetValue("turnScale");
-	highSpeed = config->GetValue("driveHigh");
-	lowSpeed = config->GetValue("driveLow");
+	//highSpeed = config->GetValue("driveHigh");
+	//lowSpeed = config->GetValue("driveLow");
 	alpha = config->GetValue("driveAlpha");
 	kP = config->GetValue("driveP");
 	kI = config->GetValue("driveI");
@@ -79,6 +80,9 @@ void Drive::reload(){
 	rightPID->SetPID(kP,kI,kD);
 	leftPID->Enable();
 	rightPID->Enable();
+	
+	shiftMode = false;
+	driveShift.Set(Relay::kForward);
 }
 
 std::string Drive::name () {
@@ -92,12 +96,23 @@ void Drive::log(FILE *f) {
 void Drive::run (float left, float right) {
 	// square the values the make it more natural
 	// then low pass the values
-	left = leftPass(left * left);
-	right = rightPass(right * right);
+	left = leftPass(left * left * left); // I am being lazy right now and this will keep the sign
+	right = rightPass(right * right * right);
 	// scale the value for the turning to make it more controllable
 	fix(left, right);
-	// set teh values to the pid
-	leftPID->SetSetpoint(left);
-	rightPID->SetSetpoint(right);
+	// set the values to the pid
+	leftPID->SetSetpoint(left * currentSpeed);
+	rightPID->SetSetpoint(right * currentSpeed);
 }
 
+void Drive::shift(bool s) {
+	if(s==shiftMode) return;
+	shiftMode = s;
+	if(shiftMode) {
+		currentSpeed = config->GetValue("driveHigh");
+		driveShift.Set(Relay::kReverse);
+	}else{
+		currentSpeed = config->GetValue("driveLow");
+		driveShift.Set(Relay::kForward);
+	}
+}

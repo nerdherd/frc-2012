@@ -29,8 +29,7 @@ private:
 	
 	
 	float scale;
-	float highSpeed;
-	float lowSpeed; 
+	float currentSpeed;
 	float alpha;
 	float kP, kI, kD;
 	
@@ -42,6 +41,9 @@ private:
 	PIDController *leftPID, *rightPID;
 	
 	Encoder leftEncoder, rightEncoder;
+
+	Relay driveShift;
+	bool shiftMode;
 	
 	void fix(float &left, float &right);
 	//void lowpass(float&, float&);
@@ -51,8 +53,8 @@ public:
 	
 	void run(float left, float right);
 	
-	//void fullfast(float&, float&);
-	//void fullslow(float&, float*);
+	void shift(bool);
+	
 	void reload(); 
 	std::string name();
 	void log(FILE*);
