@@ -11,10 +11,11 @@ private:
 	JaguarLog *lowerMotor, *upperMotor;
 	Solenoid leftLargeDown, leftLargeUp, rightLargeDown, rightLargeUp;
 	Solenoid leftLittleDown, leftLittleUp, rightLittleDown, rightLittleUp;
+	bool leftDown, rightDown;
 public:
 	InTake(Logger*, CSVReader*);
 	
-	void run (float lower, float upper, bool leftPop, bool rightPop);
+	void run (float lower, float upper, bool leftPop, bool rightPop, bool littlePop);
 	
 	std::string name ();
 	void log (FILE*);

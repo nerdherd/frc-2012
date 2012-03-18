@@ -6,10 +6,10 @@ Shooter::Shooter (Logger *l, CSVReader *c, CameraTracking *cam) :
 	LogBase(l),
 	config(c) ,
 	camera(cam),
-	encoder(1,2),
+	encoder(11,12),
 	distance(2),
 	TaskShoot("Shooter", (FUNCPTR)s_TaskShoot),
-	LimitTurret(3),	
+	LimitTurret(13),	
 	inited(false),
 	previousDistance(-1)
 {
@@ -98,8 +98,10 @@ void Shooter::run () {
 	while(true) {
 		computeTurn();
 		// for the speed of the shooter
-		pid->SetSetpoint(-1*computeSpeed(computeDistance())/60.);
-		printf("encoder %f\n", encoder.GetRate()*60);
+		pid->SetSetpoint(config->GetValue("shooter")/-60.);
+		//pid->SetSetpoint(0);
+		//pid->SetSetpoint(-1*computeSpeed(computeDistance())/60.);
+		//printf("encoder %f %f\n", encoder.GetRate()*60, distance.GetVoltage()/.0098);
 		
 		double intPart;
 		turret->Set(modf(TurretLocation, &intPart));

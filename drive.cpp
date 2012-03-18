@@ -1,5 +1,8 @@
 #include "drive.h"
 
+#include <iostream>
+using namespace std;
+
 Drive::Drive(Logger *l, CSVReader *c):
 	LogBase(l),
 	config(c),
@@ -7,11 +10,13 @@ Drive::Drive(Logger *l, CSVReader *c):
 	rightPass(&alpha),
 	leftEncoder(3,4),
 	rightEncoder(5,6),
-	driveShift(1)
+	driveShiftUp(1),
+	driveShiftDown(2),
+	shiftMode(true)
 {
 	scale = config->GetValue("turnScale");
-	highSpeed = config->GetValue("driveHigh");
-	lowSpeed = config->GetValue("driveLow");
+	//highSpeed = config->GetValue("driveHigh");
+	//lowSpeed = config->GetValue("driveLow");
 	alpha = config->GetValue("driveAlpha");
 	kP = config->GetValue("driveP");
 	kI = config->GetValue("driveI");
@@ -57,8 +62,8 @@ void Drive::fix(float &left, float &right){
 
 Drive::PIDout::PIDout (JaguarLog *a, JaguarLog *b) : motor1(a), motor2(b) {}
 void Drive::PIDout::PIDWrite (float output) {
-	motor1->Set(output);
-	motor2->Set(output);
+	//motor1->Set(output);
+	//motor2->Set(output);
 }
 
 float Drive::lowPass::operator () (float value)  {
@@ -67,7 +72,7 @@ float Drive::lowPass::operator () (float value)  {
 
 void Drive::reload(){
 	scale = config->GetValue("turnScale");
-	//highSpeed = config->GetValue("driveHigh");
+	currentSpeed = config->GetValue("driveHigh");
 	//lowSpeed = config->GetValue("driveLow");
 	alpha = config->GetValue("driveAlpha");
 	kP = config->GetValue("driveP");
@@ -82,7 +87,9 @@ void Drive::reload(){
 	rightPID->Enable();
 	
 	shiftMode = false;
-	driveShift.Set(Relay::kForward);
+	//driveShift.Set(Relay::kReverse);
+	driveShiftDown.Set(false);
+	driveShiftUp.Set(true);
 }
 
 std::string Drive::name () {
@@ -101,18 +108,25 @@ void Drive::run (float left, float right) {
 	// scale the value for the turning to make it more controllable
 	fix(left, right);
 	// set the values to the pid
-	leftPID->SetSetpoint(left * currentSpeed);
-	rightPID->SetSetpoint(right * currentSpeed);
+	currentSpeed=1;
+	left1->Set(left * currentSpeed);
+	left2->Set(left * currentSpeed);
+	right1->Set(-1 * right * currentSpeed);
+	right2->Set(-1 * right * currentSpeed);
+	//leftPID->SetSetpoint(-1 * left * currentSpeed);
+	//rightPID->SetSetpoint(right * currentSpeed);
 }
 
 void Drive::shift(bool s) {
-	if(s==shiftMode) return;
+	//if(s==shiftMode) return;
 	shiftMode = s;
 	if(shiftMode) {
 		currentSpeed = config->GetValue("driveHigh");
-		driveShift.Set(Relay::kReverse);
+		driveShiftUp.Set(true);
+		driveShiftDown.Set(false);
 	}else{
 		currentSpeed = config->GetValue("driveLow");
-		driveShift.Set(Relay::kForward);
+		driveShiftDown.Set(true);
+		driveShiftUp.Set(false);
 	}
 }

@@ -30,6 +30,7 @@ private:
 	
 	float scale;
 	float currentSpeed;
+	//float highSpeed, lowSpeed;
 	float alpha;
 	float kP, kI, kD;
 	
@@ -42,7 +43,8 @@ private:
 	
 	Encoder leftEncoder, rightEncoder;
 
-	Relay driveShift;
+	//Relay driveShift;
+	Solenoid driveShiftUp, driveShiftDown;
 	bool shiftMode;
 	
 	void fix(float &left, float &right);
