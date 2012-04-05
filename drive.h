@@ -49,6 +49,7 @@ private:
 	
 	void fix(float &left, float &right);
 	//void lowpass(float&, float&);
+	float TargetLeft, TargetRight;
 public:
 	Drive (Logger*, CSVReader*);
 	virtual ~Drive(); 

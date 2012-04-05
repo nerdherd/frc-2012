@@ -99,6 +99,7 @@ void Shooter::run () {
 		computeTurn();
 		// for the speed of the shooter
 		pid->SetSetpoint(config->GetValue("shooter")/-60.);
+		cout << encoder.GetRate() << endl;
 		//pid->SetSetpoint(0);
 		//pid->SetSetpoint(-1*computeSpeed(computeDistance())/60.);
 		//printf("encoder %f %f\n", encoder.GetRate()*60, distance.GetVoltage()/.0098);

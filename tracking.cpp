@@ -88,7 +88,9 @@ void CameraTracking::TrackTask () {
 		// but there are no new variables and the constructor is empty so there should be no problems
 		BinaryImage *bThreshold = static_cast<BinaryImage*>(Threshold);
 		
-		BinaryImage *convex = bThreshold->ConvexHull(true);
+		BinaryImage *clearedImage = bThreshold->RemoveSmallObjects(false, 2);
+		
+		BinaryImage *convex = clearedImage->ConvexHull(true);
 		
 		convex->Write("convex_img.png");
 		
@@ -138,6 +140,7 @@ void CameraTracking::TrackTask () {
 		// clean up
 		delete Threshold;
 		delete convex;
+		delete clearedImage;
 		//delete CAMresults;
 	}
 }

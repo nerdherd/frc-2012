@@ -47,7 +47,8 @@ public:
 		camera = new CameraTracking(log, config);
 		
 		drive = new Drive(log, config);
-		shooter = new Shooter(log, config, camera);
+		//shooter = NULL;
+		//shooter = new Shooter(log, config, camera);
 		intake = new InTake(log, config);
 		
 		//imu = new IMU(log);

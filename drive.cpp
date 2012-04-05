@@ -9,7 +9,7 @@ Drive::Drive(Logger *l, CSVReader *c):
 	leftPass(&alpha),
 	rightPass(&alpha),
 	leftEncoder(3,4),
-	rightEncoder(5,6),
+	rightEncoder(1,2),
 	driveShiftUp(1),
 	driveShiftDown(2),
 	shiftMode(true)
@@ -62,17 +62,20 @@ void Drive::fix(float &left, float &right){
 
 Drive::PIDout::PIDout (JaguarLog *a, JaguarLog *b) : motor1(a), motor2(b) {}
 void Drive::PIDout::PIDWrite (float output) {
-	//motor1->Set(output);
-	//motor2->Set(output);
+	motor1->Set(output);
+	motor2->Set(output);
 }
 
 float Drive::lowPass::operator () (float value)  {
-	return lastValue = lastValue + (value - lastValue) * (*alpha);
+	lastValue = lastValue + (value - lastValue) * (*alpha);
+	if(lastValue < .05 && lastValue > -.05)
+		return 0;
+	return lastValue;
 }
 
 void Drive::reload(){
 	scale = config->GetValue("turnScale");
-	currentSpeed = config->GetValue("driveHigh");
+	currentSpeed = config->GetValue("driveHigh") / 60.;
 	//lowSpeed = config->GetValue("driveLow");
 	alpha = config->GetValue("driveAlpha");
 	kP = config->GetValue("driveP");
@@ -93,11 +96,11 @@ void Drive::reload(){
 }
 
 std::string Drive::name () {
-	return "somethign";
+	return "Max speed,Left Set,Left actual,Right Set,Right actual,";
 }
 
 void Drive::log(FILE *f) {
-	fprintf(f, ",%f", scale);
+	fprintf(f, ",%f,%f,%f,%f,%f", currentSpeed, TargetLeft, leftEncoder.GetRate(), TargetRight, rightEncoder.GetRate());
 }
 
 void Drive::run (float left, float right) {
@@ -108,24 +111,26 @@ void Drive::run (float left, float right) {
 	// scale the value for the turning to make it more controllable
 	fix(left, right);
 	// set the values to the pid
-	currentSpeed=1;
-	left1->Set(left * currentSpeed);
-	left2->Set(left * currentSpeed);
-	right1->Set(-1 * right * currentSpeed);
-	right2->Set(-1 * right * currentSpeed);
-	//leftPID->SetSetpoint(-1 * left * currentSpeed);
-	//rightPID->SetSetpoint(right * currentSpeed);
+	//currentSpeed=1;
+	//left1->Set(left * currentSpeed);
+	//left2->Set(left * currentSpeed);
+	//right1->Set(-1 * right * currentSpeed);
+	//right2->Set(-1 * right * currentSpeed);
+	TargetLeft = left * currentSpeed;;
+	TargetRight = right * currentSpeed;;
+	leftPID->SetSetpoint(TargetLeft);
+	rightPID->SetSetpoint(-1 * TargetRight);
 }
 
 void Drive::shift(bool s) {
 	//if(s==shiftMode) return;
 	shiftMode = s;
 	if(shiftMode) {
-		currentSpeed = config->GetValue("driveHigh");
+		currentSpeed = config->GetValue("driveHigh") / 60.;
 		driveShiftUp.Set(true);
 		driveShiftDown.Set(false);
 	}else{
-		currentSpeed = config->GetValue("driveLow");
+		currentSpeed = config->GetValue("driveLow") / 60.;
 		driveShiftDown.Set(true);
 		driveShiftUp.Set(false);
 	}
