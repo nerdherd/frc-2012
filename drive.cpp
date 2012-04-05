@@ -8,6 +8,7 @@ Drive::Drive(Logger *l, CSVReader *c):
 	config(c),
 	leftPass(&alpha),
 	rightPass(&alpha),
+	speedPass(&speedChangeAlpha),
 	leftEncoder(3,4),
 	rightEncoder(1,2),
 	driveShiftUp(1),
@@ -21,14 +22,15 @@ Drive::Drive(Logger *l, CSVReader *c):
 	kP = config->GetValue("driveP");
 	kI = config->GetValue("driveI");
 	kD = config->GetValue("driveD");
+	speedChangeAlpha = config->GetValue("driveSpeedAlpha");
 	
 	left1 = new JaguarLog(l,2);
 	left2 = new JaguarLog(l,3);
 	right1 = new JaguarLog(l,4);
 	right2 = new JaguarLog(l,5);
 	
-	leftOut = new PIDout(left1, left2);
-	rightOut = new PIDout(right1, right2);
+	leftOut = new PIDout(left1, left2, &leftPass);
+	rightOut = new PIDout(right1, right2, &rightPass);
 
 	leftEncoder.SetDistancePerPulse(.004);
 	leftEncoder.SetPIDSourceParameter(Encoder::kRate);
@@ -60,8 +62,9 @@ void Drive::fix(float &left, float &right){
 	right=speed-diff; 
 }
 
-Drive::PIDout::PIDout (JaguarLog *a, JaguarLog *b) : motor1(a), motor2(b) {}
+Drive::PIDout::PIDout (JaguarLog *a, JaguarLog *b, lowPass *l) : motor1(a), motor2(b), filter(l) {}
 void Drive::PIDout::PIDWrite (float output) {
+	output = (*filter)(output);
 	motor1->Set(output);
 	motor2->Set(output);
 }
@@ -78,6 +81,7 @@ void Drive::reload(){
 	currentSpeed = config->GetValue("driveHigh") / 60.;
 	//lowSpeed = config->GetValue("driveLow");
 	alpha = config->GetValue("driveAlpha");
+	speedChangeAlpha = config->GetValue("driveSpeedAlpha");
 	kP = config->GetValue("driveP");
 	kI = config->GetValue("driveI");
 	kD = config->GetValue("driveD");
@@ -106,8 +110,10 @@ void Drive::log(FILE *f) {
 void Drive::run (float left, float right) {
 	// square the values the make it more natural
 	// then low pass the values
-	left = leftPass(left * left * left); // I am being lazy right now and this will keep the sign
-	right = rightPass(right * right * right);
+	//left = leftPass(left * left * left); // I am being lazy right now and this will keep the sign
+	//right = rightPass(right * right * right);
+	left = left * left * left;
+	right = right * right * right;
 	// scale the value for the turning to make it more controllable
 	fix(left, right);
 	// set the values to the pid
@@ -116,8 +122,9 @@ void Drive::run (float left, float right) {
 	//left2->Set(left * currentSpeed);
 	//right1->Set(-1 * right * currentSpeed);
 	//right2->Set(-1 * right * currentSpeed);
-	TargetLeft = left * currentSpeed;;
-	TargetRight = right * currentSpeed;;
+	float maxSpeed = speedPass(currentSpeed);
+	TargetLeft = left * maxSpeed;
+	TargetRight = right * maxSpeed;
 	leftPID->SetSetpoint(TargetLeft);
 	rightPID->SetSetpoint(-1 * TargetRight);
 }

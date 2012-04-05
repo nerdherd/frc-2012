@@ -21,8 +21,9 @@ private:
 	class PIDout : public PIDOutput {
 	private:
 		JaguarLog *motor1, *motor2;
+		lowPass *filter;
 	public:
-		PIDout (JaguarLog*, JaguarLog*);
+		PIDout (JaguarLog*, JaguarLog*, lowPass*);
 		void PIDWrite(float output);
 		
 	};
@@ -31,13 +32,13 @@ private:
 	float scale;
 	float currentSpeed;
 	//float highSpeed, lowSpeed;
-	float alpha;
+	float alpha, speedChangeAlpha;
 	float kP, kI, kD;
 	
 	CSVReader *config;
 	JaguarLog *left1, *left2, *right1, *right2;
 	
-	lowPass leftPass, rightPass;
+	lowPass leftPass, rightPass, speedPass;
 	PIDout *leftOut, *rightOut;
 	PIDController *leftPID, *rightPID;
 	

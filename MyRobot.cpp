@@ -47,7 +47,7 @@ public:
 		camera = new CameraTracking(log, config);
 		
 		drive = new Drive(log, config);
-		//shooter = NULL;
+		shooter = NULL;
 		//shooter = new Shooter(log, config, camera);
 		intake = new InTake(log, config);
 		
@@ -95,7 +95,7 @@ public:
 		Init();
 		GetWatchdog().SetEnabled(true);
 		cout << "Operator Control running\n";
-		while(IsOperatorControl()) {
+		while(IsOperatorControl() && IsEnabled()) {
 			GetWatchdog().Feed();
 			//WaitForData();
 			while(!IsNewDataAvailable()) Wait(.001); // wait until the driver station sends data to the robot
