@@ -12,9 +12,9 @@ leftLittleDown(5), leftLittleUp(6), rightLittleDown(7), rightLittleUp(8)
 	
 }
 
-void InTake::run(float lower, float upper, bool leftPop, bool rightPop, bool littlePop) {
+void InTake::run(float lower, bool feedF, bool feedB, bool leftPop, bool rightPop, bool littlePop) {
 	lowerMotor->Set(lower);
-	upperMotor->Set(upper);
+	upperMotor->Set(feedF ? 1.0 : (feedB ? -1.0 : 0));
 	if(leftDown || rightDown) {
 		if(rightPop) {
 			if(leftDown && !leftPop) {

@@ -48,7 +48,7 @@ public:
 		
 		drive = new Drive(log, config);
 		shooter = NULL;
-		//shooter = new Shooter(log, config, camera);
+		shooter = new Shooter(log, config, camera);
 		intake = new InTake(log, config);
 		
 		//imu = new IMU(log);
@@ -108,8 +108,8 @@ public:
 			float right = DriverStick.GetRawAxis(4);
 			drive->run(left, right);
 			
-			intake->run(-1*ArticStick.GetRawAxis(2), ArticStick.GetRawAxis(4), false, false, false);
-			
+			intake->run(-1*ArticStick.GetRawAxis(2), ArticStick.GetRawButton(5), ArticStick.GetRawButton(7), false, false, false);
+			if(shooter) shooter->runTurret(ArticStick.GetRawAxis(3));
 			
 			Wait(.01);
 		}

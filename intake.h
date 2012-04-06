@@ -15,7 +15,7 @@ private:
 public:
 	InTake(Logger*, CSVReader*);
 	
-	void run (float lower, float upper, bool leftPop, bool rightPop, bool littlePop);
+	void run (float lower, bool feedF, bool feedB, bool leftPop, bool rightPop, bool littlePop);
 	
 	std::string name ();
 	void log (FILE*);

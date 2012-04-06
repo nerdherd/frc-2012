@@ -27,6 +27,7 @@ float CameraTracking::heightToDistance (int height) {
 
 bool CameraTracking::CompareParticles(ParticleAnalysisReport par1, ParticleAnalysisReport par2) {
 	//return particle1.particleToImagePercent > particle2.particleToImagePercent;
+	if(par1.center_mass_y_normalized < par2.center_mass_y_normalized - .4) return true;
 	return (par1.particleArea / (par1.boundingRect.height * par1.boundingRect.width)) > (par2.particleArea / (par2.boundingRect.height * par2.boundingRect.width));
 }
 

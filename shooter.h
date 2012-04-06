@@ -33,6 +33,7 @@ public:
 	Shooter (Logger*, CSVReader*, CameraTracking*);
 	void reload();
 	void run();
+	void runTurret(float speed);
 	
 	virtual void PIDWrite(float output);
 	virtual ~Shooter();

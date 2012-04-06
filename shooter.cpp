@@ -76,17 +76,17 @@ void Shooter::reload () {
 		turret->Set(.2);
 		while(--count > 0 && LimitTurret.Get() == 0) Wait(.005);
 		turret->Set(0);
-		turret->ChangeControlMode(CANJaguar::kPosition);
-		turret->EnableControl(0);
+		//turret->ChangeControlMode(CANJaguar::kPosition);
+		//turret->EnableControl(0);
 		inited=true;
 		TaskShoot.Start((int)this);
 	}else{
 		// if this doesn't work then change this to take what ever the last target value was
-		turret->EnableControl(turret->GetPosition());
+		//turret->EnableControl(turret->GetPosition());
 	}
 	// set this to be based off the number of complete turns of the whole turret
-	turret->ConfigEncoderCodesPerRev((int)(500 * config->GetValue("turretMotorTurns"))); 
-	turret->SetPID(config->GetValue("turretP"), config->GetValue("turretI"), config->GetValue("turretD"));
+	//turret->ConfigEncoderCodesPerRev((int)(500 * config->GetValue("turretMotorTurns"))); 
+	//turret->SetPID(config->GetValue("turretP"), config->GetValue("turretI"), config->GetValue("turretD"));
 	pid->Enable();
 }
 
@@ -101,10 +101,10 @@ void Shooter::run () {
 		pid->SetSetpoint(config->GetValue("shooter")/-60.);
 		cout << encoder.GetRate() << endl;
 		//pid->SetSetpoint(0);
-		//pid->SetSetpoint(-1*computeSpeed(computeDistance())/60.);
+		//pid->SetSetpoint(computeSpeed(computeDistance())/-60.);
 		//printf("encoder %f %f\n", encoder.GetRate()*60, distance.GetVoltage()/.0098);
 		
-		double intPart;
+		/*double intPart;
 		turret->Set(modf(TurretLocation, &intPart));
 		if(LimitTurret.Get() == 1) {
 			// I am rezeroing the turret because it might slip on the turning and this will reset it as it should be
@@ -112,10 +112,15 @@ void Shooter::run () {
 			// I think that this has to get reset to the jaguar after it is enabled
 			turret->ConfigEncoderCodesPerRev((int)(500 * config->GetValue("turretMotorTurns"))); 
 			turret->SetPID(config->GetValue("turretP"), config->GetValue("turretI"), config->GetValue("turretD"));
-		}
+		}*/
 		
 		Wait(.05);
 	}
+}
+
+void Shooter::runTurret(float speed) {
+	turret->Set(speed * .3);
+	
 }
 
 Shooter::~Shooter() {
