@@ -1,0 +1,15 @@
+shooter, 6000
+shooterP, 1.0
+shooterI, 0.0
+shooterD, 0.0
+turretMotorTurns, 5
+turretP, 1.0
+turretI, 0.0
+turretD, 0.3
+imageHLow, 20
+imageHHigh, 40
+imageSLow, 220
+imageSHigh, 255
+imageLLow, 155
+imageLHigh, 185
+imageTargetThreshold, .80
