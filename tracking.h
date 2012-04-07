@@ -12,6 +12,7 @@ public:
 	~CameraTracking();
 	std::string name();
 	void log(FILE*);
+	void reload();
 	bool fresh;
 	float distance;
 	float horizantal;

@@ -15,6 +15,9 @@ CameraTracking::~CameraTracking() {
 	TaskTrack.Stop();
 	AxisCamera::DeleteInstance();
 }
+void CameraTracking::reload() {
+	TaskTrack.Start((int)this);
+}
 
 void CameraTracking::s_TrackTask (CameraTracking *self) {
 	//Wait(25); // give the camera some time to start up

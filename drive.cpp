@@ -78,7 +78,7 @@ float Drive::lowPass::operator () (float value)  {
 
 void Drive::reload(){
 	scale = config->GetValue("turnScale");
-	currentSpeed = config->GetValue("driveHigh") / 60.;
+	currentSpeed = config->GetValue("driveLow") / 60.;
 	//lowSpeed = config->GetValue("driveLow");
 	alpha = config->GetValue("driveAlpha");
 	speedChangeAlpha = config->GetValue("driveSpeedAlpha");
@@ -93,10 +93,10 @@ void Drive::reload(){
 	leftPID->Enable();
 	rightPID->Enable();
 	
-	shiftMode = false;
+	shiftMode = true;
 	//driveShift.Set(Relay::kReverse);
-	driveShiftDown.Set(false);
-	driveShiftUp.Set(true);
+	driveShiftDown.Set(true);
+	driveShiftUp.Set(false);
 }
 
 std::string Drive::name () {

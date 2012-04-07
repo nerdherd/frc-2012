@@ -1,6 +1,7 @@
 #include "shooter.h"
 #include <math.h>
 
+double getoShooterSpeed;
 
 Shooter::Shooter (Logger *l, CSVReader *c, CameraTracking *cam) :
 	LogBase(l),
@@ -29,8 +30,8 @@ Shooter::Shooter (Logger *l, CSVReader *c, CameraTracking *cam) :
 float Shooter::computeDistance () {
 	// return the distance in inch
 	float weight, sum;
-	sum = distance.GetVoltage()/.0098 * .3;
-	weight = .3;
+	//sum = distance.GetVoltage()/.0098 * .3;
+	//weight = .3;
 	if(previousDistance != -1) {
 		sum += previousDistance * .3;
 		weight += .3;
@@ -48,8 +49,9 @@ float Shooter::computeSpeed (float d) {
 	// return the speed in RPM
 	
 	// this is just as hackish this gets for now, but if it works then lol
-	return d*10;
+	//return d*10;
 	//return config->GetValue("shooter");
+	return 528 + d * 23.593;
 }
 
 void Shooter::computeTurn () {
@@ -62,11 +64,11 @@ void Shooter::computeTurn () {
 	}
 }
 
-void Shooter::reload () {
-	
+void Shooter::reload () {	
 	pid->SetSetpoint(0);
 	pid->Reset();
 	pid->SetPID(config->GetValue("shooterP"), config->GetValue("shooterI"), config->GetValue("shooterD"));
+	getoShooterSpeed = config->GetValue("shooter");
 	if(inited == false) {
 		motor1->Set(0);
 		motor2->Set(0);
@@ -98,12 +100,15 @@ void Shooter::run () {
 	while(true) {
 		computeTurn();
 		// for the speed of the shooter
-		pid->SetSetpoint(config->GetValue("shooter")/-60.);
-		cout << encoder.GetRate() << endl;
-		//pid->SetSetpoint(0);
-		//pid->SetSetpoint(computeSpeed(computeDistance())/-60.);
-		//printf("encoder %f %f\n", encoder.GetRate()*60, distance.GetVoltage()/.0098);
+		if(getoShooterSpeed != -1)
+			pid->SetSetpoint(getoShooterSpeed/-60.);
+		else{
 		
+		//pid->SetSetpoint(0);
+			pid->SetSetpoint(computeSpeed(computeDistance())/-60.);
+		//printf("encoder %f %f\n", encoder.GetRate()*60, distance.GetVoltage()/.0098);
+		}
+		cout << encoder.GetRate() << endl;
 		/*double intPart;
 		turret->Set(modf(TurretLocation, &intPart));
 		if(LimitTurret.Get() == 1) {

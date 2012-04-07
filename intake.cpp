@@ -8,13 +8,13 @@ leftLittleDown(5), leftLittleUp(6), rightLittleDown(7), rightLittleUp(8)
 {
 	leftDown = rightDown = false;
 	lowerMotor = new JaguarLog(log, 9);
-	upperMotor = new JaguarLog(log, 10);
+	//upperMotor = new JaguarLog(log, 10);
 	
 }
 
 void InTake::run(float lower, bool feedF, bool feedB, bool leftPop, bool rightPop, bool littlePop) {
 	lowerMotor->Set(lower);
-	upperMotor->Set(feedF ? 1.0 : (feedB ? -1.0 : 0));
+	//upperMotor->Set(feedF ? 1.0 : (feedB ? -1.0 : 0));
 	if(leftDown || rightDown) {
 		if(rightPop) {
 			if(leftDown && !leftPop) {
@@ -67,6 +67,6 @@ std::string InTake::name () {
 
 
 void InTake::log(FILE *f) {
-	fprintf(f, ",0");
+	fprintf(f, ",%f", upperMotor->Get());
 }
 
